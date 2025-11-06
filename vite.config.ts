@@ -23,11 +23,11 @@ export default defineConfig(async ({ mode }) => {
     },
     plugins: tailwind ? [react(), tailwind()] : [react()],
     define: {
-      // Maintain current usage pattern for WalletTabScreen
-      'process.env.API_KEY': JSON.stringify(env.GEMINI_API_KEY),
-      'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY),
-      // Optional: expose Vite-prefixed env for future use
-      'import.meta.env.VITE_GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY)
+      // Use Vite-prefixed env variable for build-time injection
+      'process.env.API_KEY': JSON.stringify(env.VITE_GEMINI_API_KEY),
+      'process.env.GEMINI_API_KEY': JSON.stringify(env.VITE_GEMINI_API_KEY),
+      // Expose Vite env for runtime imports if needed
+      'import.meta.env.VITE_GEMINI_API_KEY': JSON.stringify(env.VITE_GEMINI_API_KEY)
     },
     resolve: {
       alias: {
