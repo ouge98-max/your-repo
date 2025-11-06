@@ -1,0 +1,55 @@
+{
+  "deployment": {
+    "url": "https://ouma-ge-mobile-app.vercel.app",
+    "status": "active",
+    "last_deployed": "2025-11-05T23:45:00Z",
+    "environment": "production"
+  },
+  "monitoring": {
+    "uptime": {
+      "enabled": true,
+      "check_interval": "5 minutes",
+      "alert_threshold": "99.9%"
+    },
+    "performance": {
+      "web_vitals": true,
+      "core_web_vitals": {
+        "LCP": "< 2.5s",
+        "FID": "< 100ms", 
+        "CLS": "< 0.1"
+      },
+      "bundle_size": {
+        "max_js": "500KB",
+        "max_css": "100KB"
+      }
+    },
+    "error_tracking": {
+      "enabled": true,
+      "rate_limiting": true,
+      "alert_threshold": 10
+    },
+    "analytics": {
+      "page_views": true,
+      "user_interactions": true,
+      "conversion_tracking": false
+    }
+  },
+  "security": {
+    "https_enforced": true,
+    "headers": {
+      "X-Frame-Options": "DENY",
+      "X-Content-Type-Options": "nosniff",
+      "X-XSS-Protection": "1; mode=block",
+      "Referrer-Policy": "strict-origin-when-cross-origin"
+    },
+    "csp_policy": "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://generativelanguage.googleapis.com https://maps.googleapis.com"
+  },
+  "alerts": {
+    "channels": ["email"],
+    "thresholds": {
+      "response_time": 3000,
+      "error_rate": 5,
+      "uptime": 99.9
+    }
+  }
+}

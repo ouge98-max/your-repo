@@ -1,0 +1,9 @@
+{
+  "name": "OumaGe",
+  "description": "A web application simulating a super app for Bangladesh where users can instantly send money within a chat interface for free, combined with basic social communication features.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone",
+    "geolocation"
+  ]
+}
