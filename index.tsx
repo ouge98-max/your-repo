@@ -27,7 +27,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   public render() {
     if (this.state.hasError) {
       return (
-        <div className="flex flex-col items-center justify-center min-h-screen bg-background p-4 text-center">
+        <div className="flex flex-col items-center justify-center min-h-screen bg-background p-4 text-center" role="alert">
           <AlertTriangle className="h-12 w-12 text-destructive mb-4" />
           <h1 className="text-2xl font-bold text-foreground">Something went wrong.</h1>
           <p className="text-muted-foreground mt-2">
@@ -43,7 +43,7 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
       );
     }
 
-    return (this as any).props.children;
+    return this.props.children as ReactNode;
   }
 }
 
@@ -56,13 +56,26 @@ root.render(
   </React.StrictMode>
 );
 
-// Listen for Service Worker update events from the registration script in index.html
-window.addEventListener('swUpdate', (event: CustomEvent) => {
-  const installingWorker = event.detail;
+// typed custom event for service worker updates
+interface SWUpdateEventDetail {
+  // depending on your registration script, this might be a ServiceWorker instance
+  installingWorker?: ServiceWorker;
+}
+interface SWUpdateEvent extends CustomEvent {
+  detail: SWUpdateEventDetail;
+}
+
+window.addEventListener('swUpdate', (event: Event) => {
+  const customEvent = event as SWUpdateEvent;
+  const installingWorker = customEvent.detail?.installingWorker;
   if (installingWorker) {
     toast.custom(
       (t) => (
-        <div className={`max-w-md w-full bg-card text-card-foreground shadow-lg rounded-lg pointer-events-auto flex ring-1 ring-border animate-fade-in-up`}>
+        <div
+          className={`max-w-md w-full bg-card text-card-foreground shadow-lg rounded-lg pointer-events-auto flex ring-1 ring-border animate-fade-in-up`}
+          role="status"
+          aria-live="polite"
+        >
           <div className="flex-1 w-0 p-4">
             <div className="flex items-start">
               <div className="flex-shrink-0">
@@ -101,12 +114,11 @@ window.addEventListener('unhandledrejection', event => {
   console.error('Unhandled Promise Rejection:', event.reason);
   event.preventDefault();
 
-  // Extract a useful message
   const errorMessage = (event.reason as Error)?.message || 'An unknown error occurred.';
 
   toast.error(
     (t) => (
-      <div className="flex items-start">
+      <div className="flex items-start" role="alert" aria-live="assertive">
         <AlertTriangle className="h-5 w-5 text-destructive mr-3 mt-0.5" />
         <div>
           <p className="font-semibold text-destructive-foreground">Operation Failed</p>
@@ -123,4 +135,10 @@ window.addEventListener('unhandledrejection', event => {
       }
     }
   );
+});
+
+// Add global error listener for non-promise runtime errors
+window.addEventListener('error', (event) => {
+  console.error('Global error captured:', event.error || event.message);
+  // optional: show a concise toast or forward to monitoring
 });
